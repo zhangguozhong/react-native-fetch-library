@@ -3,11 +3,11 @@ import FetchWithTimeout from './FetchWithTimeout'
 
 export default async (baseUrl, urlParams) => {
 
-    let { url, method, timeout } = urlParams;
+    let { url, method, timeout, params } = urlParams;
     let sessionToken = '';
     method = method.toUpperCase();
     let requestUrl = checkUrl(url) ? url : (baseUrl + url);
-    requestUrl = method === 'GET' ? makeUrl(requestUrl, urlParams) : requestUrl;
+    requestUrl = method === 'GET' ? makeUrl(requestUrl, params) : requestUrl;
 
     let testUserAgent = {
       apiVersion:3,
@@ -21,7 +21,7 @@ export default async (baseUrl, urlParams) => {
             'testUserAgent':JSON.stringify(testUserAgent),
             'sessionToken':sessionToken
         },
-        body: urlParams.type === 'POST' ? JSON.stringify(urlParams.params) : null
+        body: urlParams.type === 'POST' ? JSON.stringify(params) : null
     };
 
     return FetchWithTimeout(requestUrl, headers).then(result => result.json());
@@ -29,14 +29,13 @@ export default async (baseUrl, urlParams) => {
 
 const makeUrl = (url, urlParams) => {
 
-    let { params } = urlParams;
     let reqUrl = url;
     reqUrl = (reqUrl.indexOf('?') !== -1) ? reqUrl + '&' : reqUrl + '?';
 
-    if (params) {
+    if (urlParams) {
 
-        let queryItems = Object.keys(params).map(key => {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        let queryItems = Object.keys(urlParams).map(key => {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(urlParams[key]);
         });
         reqUrl += queryItems.join('&');
     }
