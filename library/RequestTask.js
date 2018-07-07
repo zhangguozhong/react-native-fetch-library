@@ -6,7 +6,7 @@ import { InteractionManager, DeviceEventEmitter } from 'react-native'
 
 export default class RequestTask {
 
-    static startTask(fromPage, baseUrl, urlParams, isLoading, isShowWifi, successCallback, errorCallback) {
+    static startTask(fromPage, baseUrl, urlParams, isLoading, isShowWifi, successCallback, errorCallback, cancelCallback) {
 
         let requestSuccessCallback = (data) => {
             InteractionManager.runAfterInteractions(() => {
@@ -41,5 +41,16 @@ export default class RequestTask {
         };
 
         RequestHandler.request(requestAction).done();
+    }
+
+    /**
+     * 取消网络请求
+     */
+    static cancelTask() {
+
+        for (let cancelPromise of global.fetchPromises) {
+            cancelPromise.abort();
+        }
+        global.fetchPromises.splice(0,global.fetchPromises.length);
     }
 }

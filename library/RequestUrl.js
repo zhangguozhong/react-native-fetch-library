@@ -14,5 +14,4 @@ const RequestUrl = {
     }
 };
 
-
 export default RequestUrl;

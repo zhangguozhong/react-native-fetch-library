@@ -3,25 +3,36 @@ const DEFAULT_REQUEST_TIME_OUT = 15000;
 export default (url, headers, body) => {
 
     let timeout = headers&&headers.timeout ? headers.timeout : DEFAULT_REQUEST_TIME_OUT;
-    let request_timer = null;
+    let reqTimer = null;
+    let abort = null;
 
-    let timeout_promise = new Promise((resolve, reject) => {
-        request_timer = setTimeout(() => {
-            reject(new Error('request time out'));
+    //请求超时
+    let timeoutPromise = new Promise((resolve, reject) => {
+        reqTimer = setTimeout(() => {
+            reject({ok: false, text: 'timeout', title: '服务器超时！请重试！'});
         }, timeout);
     });
 
-    let fetch_promise = new Promise((resolve, reject) => {
+    let fetchPromise = new Promise((resolve, reject) => {
+        //用于取消网络请求
+        abort = () => {
+            reject({ok: false, text: 'timeout', title: '请求被取消'});
+        };
+
         fetch(url, headers, body).then(response => {
-            if (response.status >= 200 && response.status < 300) {
-                clearTimeout(request_timer);
+            if (response.ok || response.status >= 200 && response.status < 300) {
+                clearTimeout(reqTimer);
                 resolve(response);
             }
         }).catch((error) => {
-            clearTimeout(request_timer);
+            clearTimeout(reqTimer);
             reject(error);
-        })
+        });
     });
 
-    return Promise.race([fetch_promise, timeout_promise]);
+    let promise = Promise.race([fetchPromise, timeoutPromise]);
+    promise.abort = abort;
+    global.fetchPromises.push(promise);//保存所有的网络请求
+
+    return promise;
 }
