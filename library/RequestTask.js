@@ -2,6 +2,7 @@
 import RequestHandler from './RequestHandler'
 import NetworkErrorCode from './NetworkErrorCode'
 import Listener from './Listener'
+import GlobalFetchPromises from './GlobalFetchPromises'
 import { InteractionManager, DeviceEventEmitter } from 'react-native'
 
 export default class RequestTask {
@@ -46,11 +47,18 @@ export default class RequestTask {
     /**
      * 取消网络请求
      */
-    static cancelTask() {
+    static cancelTaskInPage(fromPage) {
 
-        for (let cancelPromise of global.fetchPromises) {
-            cancelPromise.abort();
-        }
-        global.fetchPromises.splice(0,global.fetchPromises.length);
+        try {
+            let fetchPromises = GlobalFetchPromises['testPageId'];
+            if (fetchPromises && Array.isArray(fetchPromises)) {
+                for (let fetchPromise of fetchPromises) {
+                    if (typeof fetchPromise === 'object' && fetchPromise.abort) {
+                        fetchPromise.abort();
+                    }
+                }
+                delete GlobalFetchPromises['testPageId'];
+            }
+        } catch (err) { }
     }
 }

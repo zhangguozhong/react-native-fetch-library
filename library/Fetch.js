@@ -1,7 +1,7 @@
 
 import FetchWithTimeout from './FetchWithTimeout'
 
-export default async (baseUrl, urlParams) => {
+export default async (pageId, baseUrl, urlParams) => {
 
     let { url, method, timeout, params } = urlParams;
     let sessionToken = '';
@@ -17,6 +17,7 @@ export default async (baseUrl, urlParams) => {
     let headers = {
         method:method,
         timeout:timeout,
+        pageId:pageId,
         headers:{
             'testUserAgent':JSON.stringify(testUserAgent),
             'sessionToken':sessionToken

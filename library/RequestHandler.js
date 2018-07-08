@@ -8,8 +8,7 @@ export default class RequestHandler {
         let { fromPage, baseUrl, urlParams, isLoading, isShowWifi, successCallback, errorCallback } = requestAction;
 
         try {
-
-            let result = await Fetch(baseUrl, urlParams);
+            let result = await Fetch('testPageId', baseUrl, urlParams);
 
             if (result || result.code === 0) {
                 if (successCallback) {

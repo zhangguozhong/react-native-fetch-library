@@ -1,5 +1,7 @@
 
+import GlobalFetchPromises from './GlobalFetchPromises'
 const DEFAULT_REQUEST_TIME_OUT = 15000;
+
 export default (url, headers, body) => {
 
     let timeout = headers&&headers.timeout ? headers.timeout : DEFAULT_REQUEST_TIME_OUT;
@@ -30,9 +32,22 @@ export default (url, headers, body) => {
         });
     });
 
-    let promise = Promise.race([fetchPromise, timeoutPromise]);
-    promise.abort = abort;
-    global.fetchPromises.push(promise);//保存所有的网络请求
+    let racePromise = Promise.race([fetchPromise, timeoutPromise]);
+    racePromise.abort = abort;
+    storagePromise(headers.pageId, racePromise);// 保存网络请求
 
-    return promise;
+    return racePromise;
 }
+
+const storagePromise = (pageId, curPromise) => {
+
+    try {
+        let fetchPromises = GlobalFetchPromises[pageId];
+        if (fetchPromises && Array.isArray(fetchPromises)) {
+            GlobalFetchPromises[pageId] = [...fetchPromises, curPromise];
+        }else
+        {
+            GlobalFetchPromises[pageId] = [curPromise];
+        }
+    } catch (error) { }
+};
