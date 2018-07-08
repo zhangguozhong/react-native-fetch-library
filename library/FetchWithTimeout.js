@@ -44,7 +44,7 @@ const storagePromise = (pageId, curPromise) => {
     try {
         let fetchPromises = GlobalFetchPromises[pageId];
         if (fetchPromises && Array.isArray(fetchPromises)) {
-            GlobalFetchPromises[pageId] = [...fetchPromises, curPromise];
+            GlobalFetchPromises[pageId].push(curPromise);
         }else
         {
             GlobalFetchPromises[pageId] = [curPromise];
