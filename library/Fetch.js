@@ -22,7 +22,7 @@ export default async (pageId, baseUrl, urlParams) => {
             'testUserAgent':JSON.stringify(testUserAgent),
             'sessionToken':sessionToken
         },
-        body: method === 'POST' ? JSON.stringify(params) : null
+        body: method === 'GET' ? null : JSON.stringify(params)
     };
 
     return FetchWithTimeout(requestUrl, headers).then(result => result.json());
