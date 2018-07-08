@@ -44,7 +44,7 @@ import RequestUrl from './Pages/Utils/RequestUrl'
 
 RequestTask.startTask(this,'',RequestUrl.fetchList(pageIndex,pageSize), true,true,(data)=>{
           console.log(`result ${JSON.stringify(data)}`);
-      },(message)=>{
+      },(code, message)=>{
 
       });
 
