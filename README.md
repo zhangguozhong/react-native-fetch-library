@@ -7,7 +7,7 @@
 
 （1）把组件所有的fetch取消，并不能针对某个fetch进行处理；
  
-（2）单独使用Fetch、FetchWithTimeout文件可以实现对单一fetch的操作，开发者可执行实现封装。
+（2）单独使用Fetch、FetchWithTimeout文件可以实现对单一fetch的操作，开发者可自行改造。
 
 
 
