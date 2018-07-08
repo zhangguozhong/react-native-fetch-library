@@ -34,7 +34,6 @@ const makeUrl = (url, urlParams) => {
     reqUrl = (reqUrl.indexOf('?') !== -1) ? reqUrl + '&' : reqUrl + '?';
 
     if (urlParams) {
-
         let queryItems = Object.keys(urlParams).map(key => {
             return encodeURIComponent(key) + '=' + encodeURIComponent(urlParams[key]);
         });
